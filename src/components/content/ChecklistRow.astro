@@ -1,0 +1,232 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+import { inline } from "@/lib/inline.ts";
+
+type Props = HTMLAttributes<"label"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Stable saved-state id. */
+  id: string;
+  /** Group whose progress this row reports to. */
+  group: string;
+  /** Row title. */
+  title: string;
+  /** Second-language or alternate name. */
+  alt?: string;
+  /** Latin name. */
+  latin?: string;
+  /** Prominent quantity. */
+  amount?: string;
+  /** Supporting detail. `**bold**` allowed. */
+  detail?: string;
+  /** Dish or destination shown beside the title. */
+  meta?: string;
+  /** Temperature target. */
+  temp?: string;
+  /** Marked optional in the source. */
+  optional?: boolean;
+  /** Titles of tasks that must come first. */
+  after?: string[];
+};
+
+const {
+  render = true,
+  id,
+  group,
+  title,
+  alt,
+  latin,
+  amount,
+  detail,
+  meta,
+  temp,
+  optional = false,
+  after = [],
+  ...rest
+} = Astro.props;
+
+const flagged = temp || optional || after.length > 0;
+---
+
+{render && title && (
+  <label class="checklist-row_wrap" data-item={id} data-group={group} {...rest}>
+    <input class="checklist-row_input" type="checkbox" data-check={id} />
+    <span class="checklist-row_body">
+      <span class="checklist-row_head">
+        <span class="checklist-row_title">{title}</span>
+        {meta && <span class="checklist-row_meta">{meta}</span>}
+      </span>
+      {(alt || latin) && (
+        <span class="checklist-row_alt">
+          {alt}
+          {alt && latin && " · "}
+          {latin && <i>{latin}</i>}
+        </span>
+      )}
+      {amount && <span class="checklist-row_amount">{amount}</span>}
+      {detail && (
+        <span class="checklist-row_detail" set:html={inline(detail)} />
+      )}
+      {flagged && (
+        <span class="checklist-row_flags">
+          {temp && <span class="checklist-row_flag">{temp}</span>}
+          {optional && <span class="checklist-row_flag">Optional</span>}
+          {after.length > 0 && (
+            <span class="checklist-row_after">First: {after.join(", ")}</span>
+          )}
+        </span>
+      )}
+    </span>
+  </label>
+)}
+
+<style is:global>
+  @layer components {
+    .checklist-row_wrap {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+      gap: var(--space-3);
+      min-block-size: 3.25rem;
+      padding-block: var(--space-3);
+      border-bottom: var(--border-width) solid var(--border);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+
+      &:has(.checklist-row_input:checked) .checklist-row_title {
+        color: var(--text-2);
+        text-decoration: line-through;
+      }
+
+      &:has(.checklist-row_input:checked) .checklist-row_amount,
+      &:has(.checklist-row_input:checked) .checklist-row_detail {
+        opacity: 0.6;
+      }
+    }
+
+    .checklist-row_input {
+      display: grid;
+      place-content: center;
+      inline-size: 1.5rem;
+      block-size: 1.5rem;
+      margin: 0.1875rem 0 0;
+      border: var(--border-width) solid
+        color-mix(in lab, var(--text) 38%, transparent);
+      border-radius: 0.375rem;
+      background: var(--background-3);
+      appearance: none;
+      cursor: pointer;
+      flex: none;
+
+      &::after {
+        content: "";
+        inline-size: 0.6875rem;
+        block-size: 0.6875rem;
+        background: var(--background-3);
+        transform: scale(0);
+        clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 84% 0%, 43% 62%);
+      }
+
+      &:checked {
+        border-color: var(--olive-500);
+        background: var(--olive-500);
+      }
+
+      &:checked::after {
+        transform: scale(1);
+      }
+
+      &:focus-visible {
+        outline: var(--focus-width) solid var(--brand-500);
+        outline-offset: var(--focus-offset);
+      }
+    }
+
+    .checklist-row_body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+      min-inline-size: 0;
+    }
+
+    .checklist-row_head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0 0.75rem;
+    }
+
+    .checklist-row_title {
+      flex: 1 1 12ch;
+      min-inline-size: 0;
+      font-family: var(--serif-family);
+      font-size: 1.0625rem;
+      line-height: 1.25;
+      text-wrap: pretty;
+    }
+
+    .checklist-row_meta {
+      flex: 0 1 auto;
+      min-inline-size: 0;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      overflow-wrap: anywhere;
+    }
+
+    .checklist-row_alt {
+      font-size: 0.875rem;
+      line-height: 1.35;
+      color: var(--text-2);
+    }
+
+    .checklist-row_amount {
+      margin-top: 0.125rem;
+      font-family: var(--serif-family);
+      font-size: 1.25rem;
+      font-weight: var(--primary-bold);
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      color: var(--terracotta-500);
+    }
+
+    .checklist-row_detail {
+      margin-top: 0.125rem;
+      font-size: 0.875rem;
+      line-height: 1.45;
+      color: var(--text-2);
+      text-wrap: pretty;
+    }
+
+    .checklist-row_flags {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.375rem;
+      margin-top: 0.375rem;
+    }
+
+    .checklist-row_flag {
+      padding: 0.1875rem 0.5rem;
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-round);
+      background: var(--background-2);
+      font-size: 0.75rem;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .checklist-row_after {
+      font-size: 0.75rem;
+      line-height: 1.4;
+      color: var(--text-2);
+    }
+  }
+</style>

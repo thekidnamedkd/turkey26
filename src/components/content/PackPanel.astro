@@ -1,0 +1,64 @@
+---
+import ChecklistRow from "@/components/content/ChecklistRow.astro";
+import Panel from "@/components/content/Panel.astro";
+import ProgressBar from "@/components/content/ProgressBar.astro";
+import { EQUIPMENT, PACK_NOTE, PACK_NOTE_SOURCE } from "@/data/equipment.ts";
+import { checkId } from "@/lib/catalog.ts";
+---
+
+<Panel id="pack" title="Pack for the venue">
+  <p class="panel_intro">
+    Everything that has to travel with the food. Check it off as it goes into
+    the car.
+  </p>
+
+  <ProgressBar id="pack" label="Venue kit" variant="large" />
+
+  <div class="pack_rows">
+    {EQUIPMENT.map((item) => (
+      <ChecklistRow
+        id={checkId("pack", item.id)}
+        group="pack"
+        title={item.title}
+        detail={item.detail}
+      />
+    ))}
+  </div>
+
+  <p class="pack_note">
+    {PACK_NOTE}
+    <a
+      class="pack_note-link"
+      href={PACK_NOTE_SOURCE.url}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {PACK_NOTE_SOURCE.label}
+    </a>
+  </p>
+</Panel>
+
+<style is:global>
+  @layer components {
+    .pack_rows {
+      margin-top: var(--space-3);
+    }
+
+    .pack_note {
+      margin-top: var(--space-4);
+      padding: var(--space-3);
+      border-inline-start: 0.1875rem solid var(--terracotta-500);
+      background: var(--background-2);
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    .pack_note-link {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--text);
+      font-size: 0.8125rem;
+      text-underline-offset: 0.1875rem;
+    }
+  }
+</style>

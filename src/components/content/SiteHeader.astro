@@ -1,0 +1,51 @@
+---
+---
+
+<header class="site-head_wrap">
+  <p class="site-head_eyebrow">Market to table · Málaga</p>
+  <h1 class="site-head_title">Thanksgiving, via Málaga</h1>
+  <p class="site-head_meta">
+    14 guests · Arrival picoteo and a self-serve dinner · One oven
+  </p>
+</header>
+
+<style is:global>
+  @layer components {
+    .site-head_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      inline-size: var(--site-width);
+      margin-inline: auto;
+      padding-block: var(--space-5) var(--space-3);
+    }
+
+    .site-head_eyebrow {
+      margin: 0;
+      font-size: 0.6875rem;
+      font-weight: var(--primary-bold);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--terracotta-500);
+    }
+
+    .site-head_title {
+      margin: 0;
+      font-family: var(--serif-family);
+      font-size: clamp(2rem, 8vw, 2.75rem);
+      font-weight: var(--primary-regular);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      padding-block-end: 0.1em;
+      text-wrap: balance;
+    }
+
+    .site-head_meta {
+      margin: 0.25rem 0 0;
+      font-size: 0.9375rem;
+      line-height: 1.45;
+      color: var(--text-2);
+      text-wrap: pretty;
+    }
+  }
+</style>

@@ -1,0 +1,50 @@
+---
+import Panel from "@/components/content/Panel.astro";
+import RecipeBody from "@/components/content/RecipeBody.astro";
+import Accordion from "@/components/interactive/Accordion.astro";
+import AccordionItem from "@/components/interactive/AccordionItem.astro";
+import { RECIPES, RECIPE_GROUPS } from "@/data/recipes.ts";
+import type { Recipe } from "@/data/recipes.ts";
+
+const groups = ["arrival", "dinner"] as const;
+const byGroup = (group: Recipe["group"]) =>
+  RECIPES.filter((recipe) => recipe.group === group);
+---
+
+<Panel id="recipes" title="Recipes">
+  <p class="panel_intro">
+    Measurements stay bold inside the method, so the ingredient list and the
+    step that uses it sit together.
+  </p>
+
+  {groups.map((group) => (
+    <section class="recipes_group">
+      <h3 class="recipes_group-title">{RECIPE_GROUPS[group]}</h3>
+      <Accordion single={false}>
+        {byGroup(group).map((recipe) => (
+          <AccordionItem heading={recipe.name} headingTag="h4">
+            <RecipeBody recipe={recipe} />
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </section>
+  ))}
+</Panel>
+
+<style is:global>
+  @layer components {
+    .recipes_group {
+      margin-top: var(--space-5);
+    }
+
+    .recipes_group-title {
+      margin: 0 0 var(--space-2);
+      font-family: var(--primary-family);
+      font-size: 0.75rem;
+      font-weight: var(--primary-bold);
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--terracotta-500);
+    }
+  }
+</style>

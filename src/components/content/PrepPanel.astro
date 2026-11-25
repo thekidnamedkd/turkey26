@@ -1,0 +1,62 @@
+---
+import ChecklistRow from "@/components/content/ChecklistRow.astro";
+import Panel from "@/components/content/Panel.astro";
+import ProgressBar from "@/components/content/ProgressBar.astro";
+import { PREP_STAGES, PREP_TASKS } from "@/data/prep.ts";
+import type { PrepTask } from "@/data/prep.ts";
+import { checkId } from "@/lib/catalog.ts";
+
+const titleOf = (id: string): string =>
+  PREP_TASKS.find((task) => task.id === id)?.title ?? id;
+
+const byStage = (stage: PrepTask["stage"]) =>
+  PREP_TASKS.filter((task) => task.stage === stage);
+---
+
+<Panel id="prep" title="Prep, in three stages">
+  <p class="panel_intro">
+    Work through it in order. Temperatures and oven use sit beside the task that
+    needs them.
+  </p>
+
+  <ProgressBar id="prep" label="All prep" variant="large" />
+
+  {PREP_STAGES.map((stage) => (
+    <section
+      class="prep_stage"
+      data-group-block={stage.id}
+      data-group-progress={`stage:${stage.id}`}
+    >
+      <ProgressBar
+        id={`stage:${stage.id}`}
+        label={stage.label}
+        note={stage.note}
+      />
+      <div class="prep_rows">
+        {byStage(stage.id).map((task) => (
+          <ChecklistRow
+            id={checkId("prep", task.id)}
+            group={stage.id}
+            title={task.title}
+            detail={task.detail}
+            temp={task.temp}
+            optional={task.optional}
+            after={(task.after ?? []).map(titleOf)}
+          />
+        ))}
+      </div>
+    </section>
+  ))}
+</Panel>
+
+<style is:global>
+  @layer components {
+    .prep_stage {
+      margin-top: var(--space-5);
+    }
+
+    .prep_rows {
+      margin-top: var(--space-2);
+    }
+  }
+</style>

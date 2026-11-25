@@ -1,0 +1,110 @@
+---
+type Props = {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Progress id the client script fills in. */
+  id: string;
+  /** Visible label. */
+  label?: string;
+  /** Second line, such as a Spanish department name. */
+  note?: string;
+  /** Larger bar for the whole checklist. */
+  variant?: "default" | "large";
+};
+
+const { render = true, id, label, note, variant = "default" } = Astro.props;
+---
+
+{render && (
+  <div class:list={["progress_wrap", variant === "large" && "large"]}>
+    <div class="progress_head">
+      <span class="progress_label">
+        {label}
+        {note && <span class="progress_note">{note}</span>}
+      </span>
+      <span class="progress_count" data-count={id}>
+        0 / 0
+      </span>
+    </div>
+    <progress
+      class="progress_bar"
+      data-progress={id}
+      max="1"
+      value="0"
+      aria-label={label ? `${label} progress` : "Progress"}
+    />
+  </div>
+)}
+
+<style is:global>
+  @layer components {
+    .progress_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      inline-size: 100%;
+      min-inline-size: 0;
+    }
+
+    .progress_head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .progress_label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+      min-inline-size: 0;
+    }
+
+    .progress_wrap.large .progress_label {
+      font-family: var(--serif-family);
+      font-size: 1.125rem;
+    }
+
+    .progress_note {
+      font-family: var(--primary-family);
+      font-size: 0.8125rem;
+      letter-spacing: 0;
+      color: var(--text-2);
+    }
+
+    .progress_count {
+      flex: none;
+      font-size: 0.875rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-2);
+    }
+
+    .progress_bar {
+      inline-size: 100%;
+      block-size: 0.375rem;
+      border: 0;
+      border-radius: var(--radius-round);
+      background: color-mix(in lab, var(--text) 12%, transparent);
+      appearance: none;
+      overflow: hidden;
+
+      &::-webkit-progress-bar {
+        background: transparent;
+      }
+
+      &::-webkit-progress-value {
+        background: var(--olive-500);
+        border-radius: var(--radius-round);
+      }
+
+      &::-moz-progress-bar {
+        background: var(--olive-500);
+        border-radius: var(--radius-round);
+      }
+    }
+
+    .progress_wrap.large .progress_bar {
+      block-size: 0.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,163 @@
+---
+import ChecklistRow from "@/components/content/ChecklistRow.astro";
+import Panel from "@/components/content/Panel.astro";
+import ProgressBar from "@/components/content/ProgressBar.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import {
+  CATEGORIES,
+  INGREDIENTS,
+  INGREDIENT_INTRO,
+} from "@/data/ingredients.ts";
+import { checkId } from "@/lib/catalog.ts";
+---
+
+<Panel id="shop" title="Shop the market">
+  <Paragraph class="panel_intro">{INGREDIENT_INTRO}</Paragraph>
+
+  <div class="shop_toolbar">
+    <div class="shop_search">
+      <label class="shop_search-label" for="shop-search">
+        Find an ingredient
+      </label>
+      <input
+        class="shop_search-input"
+        id="shop-search"
+        type="search"
+        placeholder="Ingredient or dish"
+        autocomplete="off"
+        enterkeyhint="search"
+        data-search
+      />
+    </div>
+    <button class="shop_toggle" type="button" data-hide aria-pressed="false">
+      Hide bought
+    </button>
+  </div>
+
+  <ProgressBar id="shop" label="Market list" variant="large" />
+
+  <p class="shop_empty" data-empty hidden>
+    Nothing matches that search.
+  </p>
+
+  {CATEGORIES.map((category) => {
+    const items = INGREDIENTS.filter((item) => item.category === category.id);
+    return (
+      <section
+        class="shop_department"
+        data-group-block={category.id}
+        data-group-progress={`cat:${category.id}`}
+        aria-label={category.label}
+      >
+        <ProgressBar
+          id={`cat:${category.id}`}
+          label={category.label}
+          note={category.local}
+        />
+        <div class="shop_rows">
+          {items.map((item) => (
+            <ChecklistRow
+              id={checkId("shop", item.id)}
+              group={category.id}
+              title={item.name}
+              alt={item.alt}
+              latin={item.latin}
+              amount={item.amount}
+              detail={item.detail}
+              meta={item.usedFor}
+            />
+          ))}
+        </div>
+      </section>
+    );
+  })}
+</Panel>
+
+<style is:global>
+  @layer components {
+    .shop_toolbar {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 2;
+      display: flex;
+      gap: var(--space-2);
+      align-items: stretch;
+      margin-block: var(--space-2);
+      padding-block: var(--space-2);
+      background: var(--background);
+    }
+
+    .shop_search {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 0.25rem;
+      min-inline-size: 0;
+    }
+
+    .shop_search-label {
+      font-size: 0.6875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+
+    .shop_search-input {
+      inline-size: 100%;
+      min-block-size: 2.75rem;
+      padding: 0.5rem 0.75rem;
+      border: var(--border-width) solid var(--border);
+      border-radius: 0.625rem;
+      background: var(--background-3);
+      color: var(--text);
+      font: inherit;
+
+      &::placeholder {
+        color: var(--text-2);
+      }
+
+      &:focus-visible {
+        outline: var(--focus-width) solid var(--brand-500);
+        outline-offset: var(--focus-offset);
+      }
+    }
+
+    .shop_toggle {
+      align-self: end;
+      min-block-size: 2.75rem;
+      padding: 0.5rem 0.875rem;
+      border: var(--border-width) solid var(--border);
+      border-radius: 0.625rem;
+      background: var(--background-3);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.875rem;
+      cursor: pointer;
+      white-space: nowrap;
+
+      &[aria-pressed="true"] {
+        border-color: var(--olive-500);
+        background: var(--olive-500);
+        color: var(--light-100);
+      }
+
+      &:focus-visible {
+        outline: var(--focus-width) solid var(--brand-500);
+        outline-offset: var(--focus-offset);
+      }
+    }
+
+    .shop_empty {
+      padding-block: var(--space-4);
+      color: var(--text-2);
+    }
+
+    .shop_department {
+      margin-top: var(--space-5);
+    }
+
+    .shop_rows {
+      margin-top: var(--space-2);
+    }
+  }
+</style>

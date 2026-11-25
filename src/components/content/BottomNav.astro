@@ -1,0 +1,69 @@
+---
+import { SECTIONS } from "@/data/sections.ts";
+---
+
+<nav class="bottom-nav_wrap" aria-label="Sections">
+  <ul class="bottom-nav_list">
+    {SECTIONS.map((section) => (
+      <li class="bottom-nav_item">
+        <button
+          class="bottom-nav_button"
+          type="button"
+          data-tab={section.id}
+          data-nav
+          aria-current={section.id === "shop" ? "page" : undefined}
+        >
+          {section.label}
+        </button>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style is:global>
+  @layer components {
+    .bottom-nav_wrap {
+      position: fixed;
+      inset-inline: 0;
+      inset-block-end: 0;
+      z-index: 10;
+      padding-block-end: env(safe-area-inset-bottom, 0px);
+      border-top: var(--border-width) solid var(--border);
+      background: color-mix(in lab, var(--background) 94%, transparent);
+      backdrop-filter: blur(0.75rem);
+    }
+
+    .bottom-nav_list {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .bottom-nav_button {
+      inline-size: 100%;
+      min-inline-size: 0;
+      min-block-size: 3.5rem;
+      padding: 0.5rem 0.25rem;
+      border: 0;
+      background: transparent;
+      color: var(--text-2);
+      font: inherit;
+      font-size: 0.8125rem;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+
+      &[aria-current="page"] {
+        color: var(--text);
+        box-shadow: inset 0 0.125rem 0 var(--terracotta-500);
+      }
+
+      &:focus-visible {
+        outline: var(--focus-width) solid var(--brand-500);
+        outline-offset: calc(var(--focus-offset) * -1);
+      }
+    }
+  }
+</style>

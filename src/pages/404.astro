@@ -1,0 +1,32 @@
+---
+import Button from "@/components/Button.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Section from "@/components/wrapper/Section.astro";
+import { BASE_PATH } from "@/consts.ts";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Page not found"
+  description="That page is not part of this companion."
+  chrome={false}
+>
+  <Section paddingTop="small" paddingBottom="large">
+    <ContentWrapper>
+      <Heading variant="h3" tag="h1" maxWidth={17}>
+        That page isn’t here
+      </Heading>
+      <Paragraph maxWidth={36}>
+        The market list, prep stages and recipes all live on one page.
+      </Paragraph>
+      <ButtonWrapper>
+        <Button element="link" href={BASE_PATH}>
+          Back to the market list
+        </Button>
+      </ButtonWrapper>
+    </ContentWrapper>
+  </Section>
+</BaseLayout>

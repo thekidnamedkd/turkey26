@@ -1,0 +1,130 @@
+---
+import type { Recipe } from "@/data/recipes.ts";
+import { inline } from "@/lib/inline.ts";
+
+type Props = {
+  recipe: Recipe;
+};
+
+const { recipe } = Astro.props;
+---
+
+<div class="recipe-body_wrap">
+  {recipe.intro && <p class="recipe-body_intro">{recipe.intro}</p>}
+  {recipe.method.map((block) => (
+    <div class="recipe-body_block">
+      {block.heading && <h4 class="recipe-body_heading">{block.heading}</h4>}
+      {block.steps ? (
+        <ol class="recipe-body_steps">
+          {block.steps.map((step) => (
+            <li class="recipe-body_step" set:html={inline(step)} />
+          ))}
+        </ol>
+      ) : (
+        block.text && (
+          <p class="recipe-body_text" set:html={inline(block.text)} />
+        )
+      )}
+    </div>
+  ))}
+  {recipe.sources.length > 0 && (
+    <p class="recipe-body_sources">
+      <span class="recipe-body_sources-label">Sources</span>
+      {recipe.sources.map((source, index) => (
+        <>
+          <a
+            class="recipe-body_source"
+            href={source.url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {source.label}
+          </a>
+          {index < recipe.sources.length - 1 && " · "}
+        </>
+      ))}
+    </p>
+  )}
+</div>
+
+<style is:global>
+  @layer components {
+    .recipe-body_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      padding-block-end: var(--space-3);
+    }
+
+    .recipe-body_intro {
+      color: var(--text-2);
+      text-wrap: pretty;
+    }
+
+    .recipe-body_block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .recipe-body_heading {
+      margin: 0;
+      font-family: var(--primary-family);
+      font-size: 0.75rem;
+      font-weight: var(--primary-bold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--terracotta-500);
+    }
+
+    .recipe-body_text,
+    .recipe-body_step {
+      font-size: 1rem;
+      line-height: 1.55;
+      text-wrap: pretty;
+    }
+
+    .recipe-body_text strong,
+    .recipe-body_step strong {
+      font-weight: var(--primary-bold);
+      color: var(--text);
+      background: color-mix(in lab, var(--olive-500) 14%, transparent);
+      border-radius: 0.1875rem;
+      padding-inline: 0.125rem;
+      box-decoration-break: clone;
+    }
+
+    .recipe-body_steps {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin: 0;
+      padding-inline-start: 1.25rem;
+
+      & li::marker {
+        font-family: var(--serif-family);
+        color: var(--terracotta-500);
+      }
+    }
+
+    .recipe-body_sources {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      color: var(--text-2);
+    }
+
+    .recipe-body_sources-label {
+      margin-inline-end: 0.375rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 0.6875rem;
+    }
+
+    .recipe-body_source {
+      color: var(--text);
+      text-decoration: underline;
+      text-decoration-color: var(--border);
+      text-underline-offset: 0.1875rem;
+    }
+  }
+</style>

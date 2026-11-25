@@ -1,0 +1,276 @@
+---
+---
+
+<details class="state_wrap">
+  <summary class="state_summary">Progress &amp; backup</summary>
+  <div class="state_body">
+    <p class="state_status" data-status role="status">
+      Progress is saved on this browser and device.
+    </p>
+    <div class="state_actions">
+      <button class="state_button" type="button" data-export>
+        Export &amp; share
+      </button>
+      <button class="state_button" type="button" data-import>
+        Import file
+      </button>
+      <button class="state_button danger" type="button" data-reset>
+        Reset progress
+      </button>
+      <input
+        class="state_file"
+        type="file"
+        accept=".json,application/json"
+        data-file
+        hidden
+      />
+    </div>
+    <p class="state_drop" data-drop>
+      On a computer, drag a backup file here.
+    </p>
+    <p class="state_note">
+      One JSON file, listing every item with a <code>done</code> flag. Edit it
+      in any text editor and import it back. No account and no server: nothing
+      leaves this device until you share the file.
+    </p>
+  </div>
+</details>
+
+<dialog class="import_wrap" data-import-dialog aria-labelledby="import-title">
+  <form class="import_body" method="dialog">
+    <h2 class="import_title" id="import-title">
+      Import progress
+    </h2>
+    <p class="import_summary" data-import-summary></p>
+
+    <fieldset class="import_modes">
+      <legend class="import_legend">How to apply it</legend>
+      <label class="import_mode">
+        <input
+          class="import_radio"
+          type="radio"
+          name="import-mode"
+          value="merge"
+          data-import-mode
+          checked
+        />
+        <span>
+          <b>Merge</b> keeps the ticks on this device and adds the file’s.
+        </span>
+      </label>
+      <label class="import_mode">
+        <input
+          class="import_radio"
+          type="radio"
+          name="import-mode"
+          value="replace"
+          data-import-mode
+        />
+        <span>
+          <b>Replace</b> matches the file exactly, so missing ticks are cleared.
+        </span>
+      </label>
+    </fieldset>
+
+    <pre class="import_pending" data-import-pending></pre>
+
+    <div class="import_actions">
+      <button class="import_apply" type="button" data-import-apply>
+        Merge progress
+      </button>
+      <button class="import_cancel" type="submit" value="cancel">
+        Cancel
+      </button>
+    </div>
+  </form>
+</dialog>
+
+<style is:global>
+  @layer components {
+    .state_wrap {
+      inline-size: var(--site-width);
+      margin-inline: auto;
+      margin-block: var(--space-4) var(--space-6);
+      border-top: var(--border-width) solid var(--border);
+      padding-block-start: var(--space-3);
+    }
+
+    .state_summary {
+      font-size: 0.8125rem;
+      letter-spacing: 0.02em;
+      color: var(--text-2);
+      cursor: pointer;
+    }
+
+    .state_body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      padding-block-start: var(--space-3);
+    }
+
+    .state_status {
+      margin: 0;
+      font-size: 0.8125rem;
+      line-height: 1.45;
+      color: var(--text-2);
+    }
+
+    .state_actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .state_button,
+    .import_apply,
+    .import_cancel {
+      min-block-size: 2.75rem;
+      padding: 0.5rem 0.875rem;
+      border: var(--border-width) solid var(--border);
+      border-radius: 0.625rem;
+      background: var(--background-3);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.8125rem;
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: var(--focus-width) solid var(--brand-500);
+        outline-offset: var(--focus-offset);
+      }
+    }
+
+    .state_button.danger {
+      border-color: color-mix(in lab, var(--terracotta-500) 55%, transparent);
+      color: var(--terracotta-500);
+    }
+
+    .state_drop {
+      margin: 0;
+      padding: var(--space-3);
+      border: var(--border-width) dashed
+        color-mix(in lab, var(--text) 28%, transparent);
+      border-radius: 0.625rem;
+      font-size: 0.8125rem;
+      text-align: center;
+      color: var(--text-2);
+
+      &.active {
+        border-color: var(--olive-500);
+        color: var(--text);
+        background: color-mix(in lab, var(--olive-500) 10%, transparent);
+      }
+    }
+
+    .state_note {
+      margin: 0;
+      max-inline-size: 50ch;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: var(--text-2);
+    }
+
+    .state_note code {
+      font-size: 0.75rem;
+      background: var(--background-2);
+      border-radius: 0.1875rem;
+      padding-inline: 0.1875rem;
+    }
+
+    .import_wrap {
+      inline-size: min(32rem, calc(100% - var(--site-margin) * 2));
+      max-block-size: calc(100dvh - var(--space-6));
+      margin: auto;
+      padding: 0;
+      border: var(--border-width) solid var(--border);
+      border-radius: 0.875rem;
+      background: var(--background);
+      color: var(--text);
+
+      &::backdrop {
+        background: color-mix(in lab, var(--dark-900) 55%, transparent);
+      }
+    }
+
+    .import_body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      padding: var(--space-4);
+    }
+
+    .import_title {
+      margin: 0;
+      font-family: var(--serif-family);
+      font-size: 1.375rem;
+      font-weight: var(--primary-regular);
+    }
+
+    .import_summary {
+      margin: 0;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: var(--text-2);
+    }
+
+    .import_modes {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin: 0;
+      padding: var(--space-3);
+      border: var(--border-width) solid var(--border);
+      border-radius: 0.625rem;
+    }
+
+    .import_legend {
+      padding-inline: 0.25rem;
+      font-size: 0.6875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+
+    .import_mode {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-2);
+      align-items: start;
+      font-size: 0.875rem;
+      line-height: 1.45;
+      cursor: pointer;
+    }
+
+    .import_radio {
+      inline-size: 1.25rem;
+      block-size: 1.25rem;
+      margin: 0.125rem 0 0;
+      accent-color: var(--olive-500);
+    }
+
+    .import_pending {
+      margin: 0;
+      padding: var(--space-3);
+      border-radius: 0.625rem;
+      background: var(--background-2);
+      font-family: var(--primary-family);
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .import_actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .import_apply {
+      border-color: var(--olive-500);
+      background: var(--olive-500);
+      color: var(--light-100);
+    }
+  }
+</style>

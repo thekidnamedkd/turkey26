@@ -1,0 +1,125 @@
+---
+import Panel from "@/components/content/Panel.astro";
+import {
+  ARRIVAL_MENU,
+  DINNER_MENU,
+  MENU_INTRO,
+  SERVING_TARGETS,
+} from "@/data/menu.ts";
+import { inline } from "@/lib/inline.ts";
+---
+
+<Panel id="menu" title="The menu">
+  <p class="menu_intro">{MENU_INTRO}</p>
+
+  <div class="menu_courses">
+    <section class="menu_course">
+      <h3 class="menu_course-title">Arrival picoteo</h3>
+      <ul class="menu_list">
+        {ARRIVAL_MENU.map((item) => (
+          <li class="menu_item">{item.name}</li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="menu_course">
+      <h3 class="menu_course-title">Dinner buffet</h3>
+      <ul class="menu_list">
+        {DINNER_MENU.map((item) => (
+          <li class="menu_item">{item.name}</li>
+        ))}
+      </ul>
+    </section>
+  </div>
+
+  <h3 class="menu_servings-title">How much to put out</h3>
+  <dl class="menu_servings">
+    {SERVING_TARGETS.map((serving) => (
+      <div class="menu_serving">
+        <dt class="menu_serving-dish">{serving.dish}</dt>
+        <dd class="menu_serving-target" set:html={inline(serving.target)} />
+      </div>
+    ))}
+  </dl>
+</Panel>
+
+<style is:global>
+  @layer components {
+    .menu_intro {
+      max-inline-size: 46ch;
+      font-family: var(--serif-family);
+      font-size: 1.125rem;
+      line-height: 1.5;
+      text-wrap: pretty;
+    }
+
+    .menu_courses {
+      display: grid;
+      gap: var(--space-5);
+      margin-top: var(--space-5);
+    }
+
+    .menu_course-title,
+    .menu_servings-title {
+      margin: 0 0 var(--space-2);
+      font-family: var(--primary-family);
+      font-size: 0.75rem;
+      font-weight: var(--primary-bold);
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--terracotta-500);
+    }
+
+    .menu_servings-title {
+      margin-top: var(--space-6);
+    }
+
+    .menu_list {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .menu_item {
+      padding-block: var(--space-2);
+      border-bottom: var(--border-width) solid var(--border);
+      font-family: var(--serif-family);
+      font-size: 1.125rem;
+      line-height: 1.3;
+    }
+
+    .menu_servings {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin: 0;
+    }
+
+    .menu_serving {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      padding-block-end: var(--space-3);
+      border-bottom: var(--border-width) solid var(--border);
+    }
+
+    .menu_serving-dish {
+      font-family: var(--serif-family);
+      font-size: 1.0625rem;
+    }
+
+    .menu_serving-target {
+      margin: 0;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      color: var(--text-2);
+      text-wrap: pretty;
+    }
+
+    .menu_serving-target strong {
+      color: var(--text);
+    }
+  }
+</style>

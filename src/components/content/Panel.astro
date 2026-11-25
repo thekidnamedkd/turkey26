@@ -1,0 +1,59 @@
+---
+import Heading from "@/components/typography/Heading.astro";
+import Section from "@/components/wrapper/Section.astro";
+import type { SectionId } from "@/data/sections.ts";
+
+type Props = {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Section id, matched by the navigation and the saved state. */
+  id: SectionId;
+  /** Section heading. */
+  title: string;
+};
+
+const { render = true, id, title } = Astro.props;
+const visibleByDefault = id === "shop";
+---
+
+{render && (
+  <section
+    class="panel_wrap"
+    data-panel={id}
+    aria-labelledby={`${id}-title`}
+    hidden={!visibleByDefault}
+  >
+    <Section paddingTop="small" paddingBottom="large">
+      <Heading
+        tag="h2"
+        variant="h3"
+        id={`${id}-title`}
+        tabindex="-1"
+        class="panel_title"
+      >
+        {title}
+      </Heading>
+      <slot />
+    </Section>
+  </section>
+)}
+
+<style is:global>
+  @layer components {
+    .panel_intro {
+      max-inline-size: 42ch;
+      margin-block: 0 var(--space-2);
+      color: var(--text-2);
+      text-wrap: pretty;
+    }
+
+    .panel_title {
+      margin-block: 0;
+
+      &:focus-visible {
+        outline: var(--focus-width) solid var(--brand-500);
+        outline-offset: var(--focus-offset);
+      }
+    }
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+import { Font } from "astro:assets";
+
+import { BASE_PATH, SITE_DESCRIPTION, SITE_NAME } from "@/consts.ts";
+
+type Props = {
+  /** Page title. The site name is appended. */
+  title?: string;
+  /** Page description. */
+  description?: string;
+};
+
+const { title, description = SITE_DESCRIPTION } = Astro.props;
+
+const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const icon = `${BASE_PATH}icons/icon-192.png`;
+---
+
+<meta charset="utf-8" />
+<style is:inline>
+  @layer base, patterns, components, utilities;
+</style>
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, viewport-fit=cover"
+/>
+<Font cssVariable="--font-inter" preload />
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content="noindex, nofollow" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+
+<meta name="theme-color" content="#f7f2e6" />
+<meta name="color-scheme" content="light" />
+<link rel="manifest" href={`${BASE_PATH}manifest.webmanifest`} />
+<link rel="icon" type="image/svg+xml" href={`${BASE_PATH}favicon.svg`} />
+<link rel="apple-touch-icon" href={icon} />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content={SITE_NAME} />
+<meta name="generator" content={Astro.generator} />
