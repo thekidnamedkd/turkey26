@@ -12,7 +12,7 @@
     "format": "oxfmt",
     "fix": "ultracite fix",
     "lint": "ultracite check",
-    "test": "node --test tests/"
+    "test": "node --test tests/*.test.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.12",
