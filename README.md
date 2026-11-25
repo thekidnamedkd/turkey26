@@ -107,6 +107,8 @@ gh api -X POST repos/thekidnamedkd/turkey26/pages \
 
 Then check the run with `gh run watch`.
 
+GitHub Pages for a private repository needs a paid plan. On a free account, either make the repository public (`gh repo edit --visibility public`) or upgrade the account; otherwise enabling Pages returns 422.
+
 If the repository is ever renamed, change `BASE_PATH` and `SITE_URL` in `src/consts.ts` to match. Everything else (manifest, icons, service worker scope, canonical URLs) derives from those two values.
 
 ## Content
