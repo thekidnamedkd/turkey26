@@ -15,9 +15,12 @@ export const registerServiceWorker = () => {
 
   let registration: ServiceWorkerRegistration | undefined;
   let reloading = false;
+  // The first install claims the page and fires controllerchange too; only a
+  // reload the reader asked for should reload the page.
+  let acceptedUpdate = false;
 
   const reloadOnce = () => {
-    if (reloading) {
+    if (!acceptedUpdate || reloading) {
       return;
     }
     reloading = true;
@@ -33,6 +36,7 @@ export const registerServiceWorker = () => {
   navigator.serviceWorker.addEventListener("controllerchange", reloadOnce);
 
   reloadButton?.addEventListener("click", () => {
+    acceptedUpdate = true;
     const waiting = registration?.waiting;
     if (waiting) {
       // ServiceWorker.postMessage takes a transfer list, not a target origin.
